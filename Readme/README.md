@@ -14,17 +14,25 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sourishdey2005/solar-filament-seg/issues"><img src="https://img.shields.io/github/issues/sourishdey2005/solar-filament-seg?color=blue" alt="Issues" /></a>
-  <a href="https://github.com/sourishdey2005/solar-filament-seg/forks"><img src="https://img.shields.io/github/forks/sourishdey2005/solar-filament-seg?color=orange" alt="Forks" /></a>
-  <a href="https://github.com/sourishdey2005/solar-filament-seg/stargazers"><img src="https://img.shields.io/github/stars/sourishdey2005/solar-filament-seg?color=yellow" alt="Stars" /></a>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Median%20Dice-0.6919-blue?style=for-the-badge" alt="Median Dice" />
   <img src="https://img.shields.io/badge/Mean%20Dice-0.6661-blue?style=for-the-badge" alt="Mean Dice" />
   <img src="https://img.shields.io/badge/Pixel%20IoU-0.5313-blue?style=for-the-badge" alt="Pixel IoU" />
   <img src="https://img.shields.io/badge/%20Above%200.60-76%25-green?style=for-the-badge" alt="Above 0.60 Dice" />
 </p>
+
+<details>
+<summary><b>Key Highlights</b></summary>
+
+- **Instance-level segmentation** of solar filaments from full-disk 2048×2048 GONG H-Alpha observations
+- **ResNet34 U-Net** encoder pretrained on ImageNet-1k with ConvTranspose2d decoder
+- **Bounding-box-guided filament-aware cropping** — 70% of training crops centered on labeled boxes with ±100px jitter, 30% uniform background
+- **Sliding-window inference** (512×512 patches, stride 256) with Linear Gaussian overlap blending
+- **Watershed-based instance separation** using L2 distance transform and local peak detection
+- **COCO-compatible RLE output** evaluated via Panoptic Quality (PQ)
+- **Validation:** median Dice **0.6919**, mean Dice **0.6661**, pixel IoU **0.5313**, 76% of images above 0.60 Dice
+- **Rigorous train/validation split** — 85/15 partitioned by physical observation timestamp with zero spatial leakage
+
+</details>
 
 ---
 
