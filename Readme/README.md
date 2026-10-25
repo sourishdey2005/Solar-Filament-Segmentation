@@ -29,11 +29,9 @@
 5. [The Debugging Narrative](#the-debugging-narrative)
 6. [Validation Results](#validation-results)
 7. [Visual Evaluation](#visual-evaluation)
-8. [Repository Structure](#repository-structure)
-9. [Reproducibility](#reproducibility)
-10. [Limitations & Roadmap](#limitations--roadmap)
-11. [Acknowledgements & Citation](#acknowledgements--citation)
-12. [Contact](#contact)
+8. [Reproducibility](#reproducibility)
+9. [Limitations & Roadmap](#limitations--roadmap)
+10. [Contact](#contact)
 
 ---
 
@@ -287,52 +285,6 @@ Additional analytical figures generated during exploratory data analysis:
 
 ---
 
-## Repository Structure
-
-```
-solar-filament-seg/
-├── README.md                     # Complete system documentation
-├── requirements.txt              # Pinned Python package dependencies
-├── LICENSE                       # MIT License
-├── submission.csv                # Generated test competition predictions
-│
-├── figures/                      # Exploratory analysis plots
-│   ├── C_annotation_counts.png
-│   ├── D_area_distribution.png
-│   ├── E_raw_train_samples.png
-│   ├── F_train_with_masks.png
-│   ├── G_annotator_disagreement.png
-│   ├── H_class_labels.png
-│   ├── I_raw_test_samples.png
-│   ├── J_intensity_train_vs_test.png
-│   ├── K_filament_brightness.png
-│   ├── L_bbox_aspect.png
-│   └── M_empty_crop_fraction.png
-│
-├── samples/                      # Raw H-Alpha observations
-│   ├── train/                    # Six raw training disk images (.jpeg)
-│   └── test/                     # Six raw test disk images (.jpeg)
-│
-├── src/                          # Production source modules
-│   ├── dataset.py                # PyTorch dataset & balanced crop logic
-│   ├── model.py                  # U-Net & ResNet backbone definition
-│   ├── train.py                  # Main training loop with mixed precision
-│   ├── inference.py              # 2048x2048 sliding window & watershed post-process
-│   └── utils.py                  # Bounded metrics & COCO RLE utilities
-│
-├── notebooks/                    # Interactive experiments
-│   ├── 01_eda.ipynb              # Full-disk exploratory data analysis
-│   ├── 02_train.ipynb            # Model execution and logging checkpoint
-│   └── 03_inference.ipynb        # Full inference pipeline and evaluation
-│
-└── reports/                      # Visual logs and publication assets
-    ├── training_curves.png
-    ├── prediction_example.png
-    └── technical_report.pdf
-```
-
----
-
 ## Reproducibility
 
 ### Environment Setup
@@ -374,23 +326,6 @@ python src/inference.py \
 - **Distance-Transform Watershed Fragility:** Post-processing separates instances using geometric necking. If two filaments touch at their mid-spine without a clear width constriction, watershed merges them. A modern anchor-free query head (e.g., Mask2Former) would resolve physical topology better than morphological heuristics.
 - **Fixed Receptive Field:** 512×512 patches capture local barbs well, but very large filaments spanning >1000 px lose global contextual continuity. A dual-scale encoder (low-resolution global context + high-resolution local patches) would prevent fragmentation on large structures.
 - **Test-Time Augmentation (TTA):** Four-fold inference with orthogonal flips and 90° rotations was disabled to maintain inference under 1.5 seconds per frame, sacrificing an estimated ~0.015 mean Dice.
-
----
-
-## Acknowledgements & Citation
-
-This project uses the MAGFiLO 1.0 benchmark released by the National Solar Observatory (NSO) GONG network under the IEEE BigData 2026 Challenge.
-
-```bibtex
-@misc{solar_filament_segmentation_2026,
-  author = {Sourish Dey},
-  title  = {Solar Filament Segmentation: High-Resolution Instance Extraction from Ground-Based H-Alpha Observations},
-  year   = {2026},
-  publisher = {GitHub repository},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/sourishdey2005/solar-filament-seg}}
-}
-```
 
 ---
 
