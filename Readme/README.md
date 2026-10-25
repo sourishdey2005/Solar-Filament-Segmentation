@@ -1,8 +1,22 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/PyTorch-2.x-red?logo=pytorch&logoColor=white" alt="PyTorch" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" />
+  <img src="https://img.shields.io/badge/Status-Production-2ea44f" alt="Status" />
+</p>
+
 # Solar Filament Segmentation
 
-Instance segmentation of solar filaments from ground-based GONG H-Alpha observations using a U-Net with a pretrained ResNet34 encoder, bounding-box-guided filament-aware cropping, sliding-window inference, and watershed-based instance separation.
+<p align="center">
+  <b>Instance segmentation of solar filaments from ground-based GONG H-Alpha observations</b> using a U-Net with a pretrained ResNet34 encoder, bounding-box-guided filament-aware cropping, sliding-window inference, and watershed-based instance separation.
+</p>
 
-**Validation results:** median Dice **0.6919** · mean Dice **0.6661** · pixel IoU **0.5313** · **76%** of validation images score above 0.60 Dice
+<p align="center">
+  <img src="https://img.shields.io/badge/Median%20Dice-0.6919-blue?style=for-the-badge" alt="Median Dice" />
+  <img src="https://img.shields.io/badge/Mean%20Dice-0.6661-blue?style=for-the-badge" alt="Mean Dice" />
+  <img src="https://img.shields.io/badge/Pixel%20IoU-0.5313-blue?style=for-the-badge" alt="Pixel IoU" />
+  <img src="https://img.shields.io/badge/%20Above%200.60-76%25-green?style=for-the-badge" alt="Above 0.60 Dice" />
+</p>
 
 ---
 
@@ -18,6 +32,8 @@ Instance segmentation of solar filaments from ground-based GONG H-Alpha observat
 8. [Repository Structure](#repository-structure)
 9. [Reproducibility](#reproducibility)
 10. [Limitations & Roadmap](#limitations--roadmap)
+11. [Acknowledgements & Citation](#acknowledgements--citation)
+12. [Contact](#contact)
 
 ---
 
@@ -35,9 +51,11 @@ Given a calibrated H-Alpha solar disk image $I \in [0, 255]^{2048 \times 2048}$,
 
 ### Key Engineering Challenges
 
-- **Severe Class Imbalance:** Filaments account for roughly **0.39%** of the visible surface area. Standard loss functions and naive random sampling degenerate to empty-foreground predictions.
-- **Topological Complexity:** Filaments contain thin, thread-like spine barbs just a few pixels wide. Downsampling full images obliterates these structures, requiring patch-based high-resolution inference.
-- **Instance Separation Under Overlap:** Adjacent filaments frequently run parallel or touch. Naive semantic segmentation collapses clusters into monolithic blobs, triggering heavy fragmentation/merging penalties under Panoptic Quality metrics.
+| Challenge | Description |
+| :--- | :--- |
+| **Severe Class Imbalance** | Filaments account for roughly **0.39%** of the visible surface area. Standard loss functions and naive random sampling degenerate to empty-foreground predictions. |
+| **Topological Complexity** | Filaments contain thin, thread-like spine barbs just a few pixels wide. Downsampling full images obliterates these structures, requiring patch-based high-resolution inference. |
+| **Instance Separation Under Overlap** | Adjacent filaments frequently run parallel or touch. Naive semantic segmentation collapses clusters into monolithic blobs, triggering heavy fragmentation/merging penalties under Panoptic Quality metrics. |
 
 ---
 
@@ -66,7 +84,7 @@ The training target is [MAGFiLO 1.0](https://doi.org/10.1038/s41597-024-03876-y)
     Zero spatial leakage
 ```
 
-### Visual Ground Truth & Annotation Variance
+### Visual Ground Truth
 
 Filaments are absorption structures with lower local intensity relative to the surrounding chromosphere ($\Delta \approx -10$ digital numbers).
 
@@ -75,6 +93,34 @@ Filaments are absorption structures with lower local intensity relative to the s
   <img src="figures/F_train_with_masks.png" alt="Ground-truth filament masks overlaid on H-Alpha solar images" width="48%" />
 </p>
 <p align="center"><em>Left: Representative calibrated full-disk H-Alpha samples. Right: Corresponding ground-truth polygon overlays.</em></p>
+
+Raw training samples:
+
+<p align="center">
+  <img src="samples/train/20110425063154Uh.jpeg" alt="Train sample 1" width="30%" />
+  <img src="samples/train/20120403164114Mh.jpeg" alt="Train sample 2" width="30%" />
+  <img src="samples/train/20130805135854Bh.jpeg" alt="Train sample 3" width="30%" />
+  <br />
+  <img src="samples/train/20131013185334Ch.jpeg" alt="Train sample 4" width="30%" />
+  <img src="samples/train/20140116180214Mh.jpeg" alt="Train sample 5" width="30%" />
+  <img src="samples/train/20190805054730Lh.jpeg" alt="Train sample 6" width="30%" />
+</p>
+<p align="center"><em>Six raw H-Alpha training observations.</em></p>
+
+Raw test samples:
+
+<p align="center">
+  <img src="samples/test/20111216103234Ch.jpeg" alt="Test sample 1" width="30%" />
+  <img src="samples/test/20120115063134Lh.jpeg" alt="Test sample 2" width="30%" />
+  <img src="samples/test/20120707070914Th.jpeg" alt="Test sample 3" width="30%" />
+  <br />
+  <img src="samples/test/20170626133730Ch.jpeg" alt="Test sample 4" width="30%" />
+  <img src="samples/test/20180726232450Bh.jpeg" alt="Test sample 5" width="30%" />
+  <img src="samples/test/20220124155050Bh.jpeg" alt="Test sample 6" width="30%" />
+</p>
+<p align="center"><em>Six raw H-Alpha test observations confirming test-set distribution matches training.</em></p>
+
+### Annotation Variance
 
 Inter-annotator variance serves as the theoretical label-noise ceiling ($0.72 \sim 0.78$ IoU on shared disks), driven by subjective boundary decisions along faint outer barbs.
 
@@ -157,7 +203,6 @@ class FilamentAwareCrop:
         self.center_bias = center_bias
         self.jitter = jitter
 
-
     def __call__(self, image, bboxes):
         if len(bboxes) > 0 and np.random.rand() < self.center_bias:
             box = bboxes[np.random.choice(len(bboxes))]
@@ -168,8 +213,9 @@ class FilamentAwareCrop:
             cy = np.random.uniform(self.crop_size // 2, image.shape[0] - self.crop_size // 2)
         
         return self._extract_crop(image, cx, cy, self.crop_size)
-Target-conditioned sampling restored gradient signal on the filament spine, immediately stabilizing the validation curve.
 ```
+
+Target-conditioned sampling restored gradient signal on the filament spine, immediately stabilizing the validation curve.
 
 ---
 
@@ -180,7 +226,7 @@ Evaluated across the 15% patient-held-out validation split (170 annotations acro
 ### Per-Image Distributional Metrics
 
 | Metric | Mean | Median | Std Dev | P25 | P75 | Max |
-| --- | --- | --- | --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Dice Coefficient | 0.6661 | **0.6919** | 0.1216 | 0.6063 | 0.7488 | 0.8302 |
 | Intersection over Union (IoU) | 0.5102 | 0.5289 | 0.1214 | 0.4351 | 0.5985 | 0.7097 |
 | Precision | 0.6960 | 0.7321 | 0.1554 | 0.6213 | 0.7977 | 0.9582 |
@@ -205,19 +251,39 @@ Evaluated across the 15% patient-held-out validation split (170 annotations acro
 
 ## Visual Evaluation
 
+### EDA Figures
+
+Additional analytical figures generated during exploratory data analysis:
+
+| Figure | Description |
+| :--- | :--- |
+| `C_annotation_counts.png` | Histograms of filaments per image and annotator duplication per file |
+| `D_area_distribution.png` | Filament area distribution (linear, log, and coverage fraction) |
+| `H_class_labels.png` | Distribution of annotation class labels (`Left`, `Right`, `Unidentifiable`, `Ambiguous`) |
+| `I_raw_test_samples.png` | Six raw test images, confirming test-set distribution matches training |
+| `J_intensity_train_vs_test.png` | Train vs test intensity histograms, confirming no domain shift |
+| `K_filament_brightness.png` | Filament-minus-background intensity delta, confirming filaments are dark |
+| `L_bbox_aspect.png` | Bounding-box aspect ratios, confirming filaments are long and thin |
+
 <p align="center">
-  <img src="reports/prediction_example.png" alt="Example prediction overlay on raw test observation" width="55%" />
+  <img src="figures/C_annotation_counts.png" alt="Annotation counts" width="48%" />
+  <img src="figures/D_area_distribution.png" alt="Area distribution" width="48%" />
+</p>
+<p align="center">
+  <img src="figures/H_class_labels.png" alt="Class labels" width="48%" />
+  <img src="figures/K_filament_brightness.png" alt="Filament brightness" width="48%" />
+</p>
+<p align="center">
+  <img src="figures/L_bbox_aspect.png" alt="Bounding-box aspect" width="48%" />
+  <img src="figures/J_intensity_train_vs_test.png" alt="Intensity train vs test" width="48%" />
+</p>
+
+### Inference Example
+
+<p align="center">
+  <img src="reports/prediction_example.png" alt="Example prediction overlay" width="55%" />
 </p>
 <p align="center"><em>Sample predictions overlaid on individual test-set solar observations, showing filament instance boundaries.</em></p>
-
-Additional visual artifacts from the inference pipeline and per-image Dice tracking are available in the reports directory:
-
-```
-reports/
-├── training_curves.png       # Model convergence and Dice trajectory across 30 epochs
-├── prediction_example.png     # Representative inference output with mask overlays
-└── technical_report.pdf      # Full system description document
-```
 
 ---
 
@@ -225,30 +291,41 @@ reports/
 
 ```
 solar-filament-seg/
-├── README.md                   # Complete system documentation
-├── requirements.txt             # Pinned Python package dependencies
-├── LICENSE                     # MIT License
-├── submission.csv               # Generated test competition predictions
+├── README.md                     # Complete system documentation
+├── requirements.txt              # Pinned Python package dependencies
+├── LICENSE                       # MIT License
+├── submission.csv                # Generated test competition predictions
 │
-├── src/                        # Production source modules
-│   ├── dataset.py              # PyTorch dataset & balanced crop logic
-│   ├── model.py                # U-Net & ResNet backbone definition
-│   ├── train.py                # Main training loop with mixed precision
-│   ├── inference.py             # 2048x2048 sliding window & watershed post-process
-│   └── utils.py                # Bounded metrics & COCO RLE utilities
-│
-├── notebooks/                  # Interactive experiments
-│   ├── 01_eda.ipynb            # Full-disk exploratory data analysis
-│   ├── 02_train.ipynb           # Model execution and logging checkpoint
-│   └── 03_inference.ipynb       # Full inference pipeline and evaluation
-│
-├── figures/                     # Exploratory analysis plots
+├── figures/                      # Exploratory analysis plots
+│   ├── C_annotation_counts.png
+│   ├── D_area_distribution.png
 │   ├── E_raw_train_samples.png
 │   ├── F_train_with_masks.png
 │   ├── G_annotator_disagreement.png
+│   ├── H_class_labels.png
+│   ├── I_raw_test_samples.png
+│   ├── J_intensity_train_vs_test.png
+│   ├── K_filament_brightness.png
+│   ├── L_bbox_aspect.png
 │   └── M_empty_crop_fraction.png
 │
-└── reports/                     # Visual logs and publication assets
+├── samples/                      # Raw H-Alpha observations
+│   ├── train/                    # Six raw training disk images (.jpeg)
+│   └── test/                     # Six raw test disk images (.jpeg)
+│
+├── src/                          # Production source modules
+│   ├── dataset.py                # PyTorch dataset & balanced crop logic
+│   ├── model.py                  # U-Net & ResNet backbone definition
+│   ├── train.py                  # Main training loop with mixed precision
+│   ├── inference.py              # 2048x2048 sliding window & watershed post-process
+│   └── utils.py                  # Bounded metrics & COCO RLE utilities
+│
+├── notebooks/                    # Interactive experiments
+│   ├── 01_eda.ipynb              # Full-disk exploratory data analysis
+│   ├── 02_train.ipynb            # Model execution and logging checkpoint
+│   └── 03_inference.ipynb        # Full inference pipeline and evaluation
+│
+└── reports/                      # Visual logs and publication assets
     ├── training_curves.png
     ├── prediction_example.png
     └── technical_report.pdf
@@ -294,11 +371,9 @@ python src/inference.py \
 
 ## Limitations & Roadmap
 
-Distance-Transform Watershed Fragility: Post-processing separates instances using geometric necking. If two filaments touch at their mid-spine without a clear width constriction, watershed merges them. A modern anchor-free query head (e.g., Mask2Former) would resolve physical topology better than morphological heuristics.
-
-Fixed Receptive Field: 512×512 patches capture local barbs well, but very large filaments spanning >1000 px lose global contextual continuity. A dual-scale encoder (low-resolution global context + high-resolution local patches) would prevent fragmentation on large structures.
-
-Test-Time Augmentation (TTA): Four-fold inference with orthogonal flips and 90° rotations was disabled to maintain inference under 1.5 seconds per frame, sacrificing an estimated ~0.015 mean Dice.
+- **Distance-Transform Watershed Fragility:** Post-processing separates instances using geometric necking. If two filaments touch at their mid-spine without a clear width constriction, watershed merges them. A modern anchor-free query head (e.g., Mask2Former) would resolve physical topology better than morphological heuristics.
+- **Fixed Receptive Field:** 512×512 patches capture local barbs well, but very large filaments spanning >1000 px lose global contextual continuity. A dual-scale encoder (low-resolution global context + high-resolution local patches) would prevent fragmentation on large structures.
+- **Test-Time Augmentation (TTA):** Four-fold inference with orthogonal flips and 90° rotations was disabled to maintain inference under 1.5 seconds per frame, sacrificing an estimated ~0.015 mean Dice.
 
 ---
 
@@ -324,5 +399,5 @@ This project uses the MAGFiLO 1.0 benchmark released by the National Solar Obser
 **Sourish Dey**
 
 - Email: sourishdey2005@gmail.com
-- LinkedIn: https://linkedin.com/in/sourishdey
-- GitHub: https://github.com/sourishdey2005
+- LinkedIn: [linkedin.com/in/sourishdey](https://linkedin.com/in/sourishdey)
+- GitHub: [github.com/sourishdey2005](https://github.com/sourishdey2005)
