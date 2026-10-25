@@ -103,8 +103,8 @@ The training target is [MAGFiLO 1.0](https://doi.org/10.1038/s41597-024-03876-y)
 Filaments are absorption structures with lower local intensity relative to the surrounding chromosphere ($\Delta \approx -10$ digital numbers).
 
 <p align="center">
-  <img src="figures/E_raw_train_samples.png" alt="Raw H-Alpha full-disk solar training images" width="48%" />
-  <img src="figures/F_train_with_masks.png" alt="Ground-truth filament masks overlaid on H-Alpha solar images" width="48%" />
+  <img src="eda_figures/E_raw_train_samples.png" alt="Raw H-Alpha full-disk solar training images" width="48%" />
+  <img src="eda_figures/F_train_with_masks.png" alt="Ground-truth filament masks overlaid on H-Alpha solar images" width="48%" />
 </p>
 <p align="center"><em>Left: Representative calibrated full-disk H-Alpha samples. Right: Corresponding ground-truth polygon overlays.</em></p>
 
@@ -139,7 +139,7 @@ Raw test samples:
 Inter-annotator variance serves as the theoretical label-noise ceiling ($0.72 \sim 0.78$ IoU on shared disks), driven by subjective boundary decisions along faint outer barbs.
 
 <p align="center">
-  <img src="figures/G_annotator_disagreement.png" alt="Inter-annotator disagreement analysis showing IoU variation" width="60%" />
+  <img src="eda_figures/G_annotator_disagreement.png" alt="Inter-annotator disagreement analysis showing IoU variation" width="60%" />
 </p>
 <p align="center"><em>Annotator disagreement on identical solar events, illustrating uncertainty at fine boundary margins.</em></p>
 
@@ -200,7 +200,7 @@ The model had collapsed into an all-background trivial solution. The impossible 
 ### 2. The Cause: Extreme Background Bias in Patch Sampling
 
 <p align="center">
-  <img src="figures/M_empty_crop_fraction.png" alt="Distribution showing 96 percent empty crops during uniform sampling" width="65%" />
+  <img src="eda_figures/M_empty_crop_fraction.png" alt="Distribution showing 96 percent empty crops during uniform sampling" width="65%" />
 </p>
 <p align="center"><em>Diagnostic measurement: Over 90% of uniform 512×512 tiles contained zero filament foreground.</em></p>
 
@@ -267,7 +267,7 @@ Evaluated across the 15% patient-held-out validation split (170 annotations acro
 
 ### EDA Figures
 
-Additional analytical figures generated during exploratory data analysis:
+Additional analytical eda_figures generated during exploratory data analysis:
 
 | Figure | Description |
 | :--- | :--- |
@@ -280,16 +280,16 @@ Additional analytical figures generated during exploratory data analysis:
 | `L_bbox_aspect.png` | Bounding-box aspect ratios, confirming filaments are long and thin |
 
 <p align="center">
-  <img src="figures/C_annotation_counts.png" alt="Annotation counts" width="48%" />
-  <img src="figures/D_area_distribution.png" alt="Area distribution" width="48%" />
+  <img src="eda_figures/C_annotation_counts.png" alt="Annotation counts" width="48%" />
+  <img src="eda_figures/D_area_distribution.png" alt="Area distribution" width="48%" />
 </p>
 <p align="center">
-  <img src="figures/H_class_labels.png" alt="Class labels" width="48%" />
-  <img src="figures/K_filament_brightness.png" alt="Filament brightness" width="48%" />
+  <img src="eda_figures/H_class_labels.png" alt="Class labels" width="48%" />
+  <img src="eda_figures/K_filament_brightness.png" alt="Filament brightness" width="48%" />
 </p>
 <p align="center">
-  <img src="figures/L_bbox_aspect.png" alt="Bounding-box aspect" width="48%" />
-  <img src="figures/J_intensity_train_vs_test.png" alt="Intensity train vs test" width="48%" />
+  <img src="eda_figures/L_bbox_aspect.png" alt="Bounding-box aspect" width="48%" />
+  <img src="eda_figures/J_intensity_train_vs_test.png" alt="Intensity train vs test" width="48%" />
 </p>
 
 ---
