@@ -1,6 +1,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/PyTorch-2.x-red?logo=pytorch&logoColor=white" alt="PyTorch" />
+  <img src="https://img.shields.io/badge/Albumentations-augmentation-orange?logo=python&logoColor=white" alt="Albumentations" />
+  <img src="https://img.shields.io/badge/ResNet34-Backbone-6c757d?logo=none" alt="ResNet34" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Status-Production-2ea44f" alt="Status" />
 </p>
@@ -9,6 +11,12 @@
 
 <p align="center">
   <b>Instance segmentation of solar filaments from ground-based GONG H-Alpha observations</b> using a U-Net with a pretrained ResNet34 encoder, bounding-box-guided filament-aware cropping, sliding-window inference, and watershed-based instance separation.
+</p>
+
+<p align="center">
+  <a href="https://github.com/sourishdey2005/solar-filament-seg/issues"><img src="https://img.shields.io/github/issues/sourishdey2005/solar-filament-seg?color=blue" alt="Issues" /></a>
+  <a href="https://github.com/sourishdey2005/solar-filament-seg/forks"><img src="https://img.shields.io/github/forks/sourishdey2005/solar-filament-seg?color=orange" alt="Forks" /></a>
+  <a href="https://github.com/sourishdey2005/solar-filament-seg/stargazers"><img src="https://img.shields.io/github/stars/sourishdey2005/solar-filament-seg?color=yellow" alt="Stars" /></a>
 </p>
 
 <p align="center">
@@ -39,7 +47,7 @@
 
 Solar filaments are dense, relatively cool clouds of plasma suspended within the solar corona by magnetic field configurations. Their destabilization frequently triggers Coronal Mass Ejections (CMEs) and solar flares, impacting terrestrial power grids, satellite telemetry, and high-frequency communication.
 
-Manual boundary tracing across synoptic full-disk surveys is subjective, prone to annotator fatigue, and unscalable. This pipeline automates instance-level extraction on single-channel 2048×2048 full-disk observations, formatting output into COCO-compatible run-length encodings (RLE) evaluated via Panoptic Quality (PQ).
+This pipeline automates instance-level extraction on single-channel 2048×2048 full-disk H-Alpha observations from the GONG network. It produces COCO-compatible run-length encodings (RLE) of each detected filament instance, evaluated via Panoptic Quality (PQ). By combining a ResNet34-based U-Net encoder with bounding-box-guided filament-aware cropping, sliding-window inference, and watershed-based post-processing, the system achieves instance-level separation even for filaments that touch or run in parallel — a critical requirement for space-weather forecasting applications where accurate filament morphology directly informs CME risk assessment.
 
 ---
 
@@ -275,13 +283,6 @@ Additional analytical figures generated during exploratory data analysis:
   <img src="figures/L_bbox_aspect.png" alt="Bounding-box aspect" width="48%" />
   <img src="figures/J_intensity_train_vs_test.png" alt="Intensity train vs test" width="48%" />
 </p>
-
-### Inference Example
-
-<p align="center">
-  <img src="reports/prediction_example.png" alt="Example prediction overlay" width="55%" />
-</p>
-<p align="center"><em>Sample predictions overlaid on individual test-set solar observations, showing filament instance boundaries.</em></p>
 
 ---
 
